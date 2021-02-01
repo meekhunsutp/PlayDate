@@ -1,0 +1,132 @@
+﻿@model IEnumerable<PlayDate_App.Models.EventRegistration>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Your Events</h1>
+
+<p>
+    <a asp-action="Create">Create A New Event</a>
+</p>
+@if (ViewBag.PendingRequest.Count > 0)
+{
+    <h4>Pending Events</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Time And Date
+                </th>
+                <th>
+                    Is Private
+                </th>
+                <th>
+                    Capacity
+                </th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                @if(item.Accepted == false){
+                    <tr>
+                        <td>
+                            @item.Event.Location.Name
+                        </td>
+                        <td>
+                            @item.Event.TimeAndDate
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Event.IsPrivate)
+                        </td>
+                        <td>
+                            @item.Event.Capacity
+                        </td>
+                        <td>
+                            <a asp-action="AcceptInvite" asp-route-registrationNumber="@item.EventRegistrationId">Accept</a><span> | </span>
+                            <a asp-action="DeclineInvite" asp-route-registrationNumber="@item.EventRegistrationId">Decline</a><span> | </span>
+                            @*<a asp-action="DeclineReason" asp-route-id="@item.ParentId" asp-route-registrationNumber="@item.EventRegistrationId">Decline</a><span> | </span>*@
+                            <a asp-action="Details" asp-route-id="@item.EventId">Details</a>
+                        </td>
+                        @*<td>
+                        @if (item.Event.ParentId == item.ParentId)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.EventId">Edit</a><span> | </span>
+                            <a asp-action="InviteFriends" asp-route-id="@item.EventId">Invite</a><span> | </span>
+                            <a asp-action="Delete" asp-route-id="@item.EventId">Delete</a><span> | </span>
+                        }
+
+                        <a asp-action="Details" asp-route-id="@item.EventId">Details</a> |
+
+                    </td>*@
+                    </tr>
+                }
+
+            }
+
+        </tbody>
+    </table>
+
+}
+<table class="table">
+    <h4>Current Events</h4>
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Time And Date
+            </th>
+            <th>
+                Is Private
+            </th>
+            <th>
+                Capacity
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            @if (item.Accepted == true)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Event.Location.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Event.TimeAndDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Event.IsPrivate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Event.Capacity)
+                    </td>
+                    <td>
+                        @if (item.Event.ParentId == item.ParentId)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.EventId">Edit</a><span> | </span>
+                            <a asp-controller="Parent" asp-action="InviteList" asp-route-eventId="@item.EventId">Invite</a><span> | </span>
+                            <a asp-action="Delete" asp-route-id="@item.EventId">Delete</a><span> | </span>
+                        }
+                        @if (item.Event.ParentId != item.ParentId)
+                        {
+                            <a asp-action="DeclineInvite" asp-route-registrationNumber="@item.EventRegistrationId">Cancel</a><span> | </span>
+                        }
+                        <a asp-action="Details" asp-route-id="@item.EventId">Details</a>
+
+                    </td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>
